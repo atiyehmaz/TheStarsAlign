@@ -2,5 +2,7 @@
 
 var message = new navigator().GetMessage();
 
-Console.WriteLine(message);
+var seconds = new navigator().getSeconds();
+
+Console.WriteLine(seconds);
 Console.ReadLine(); 

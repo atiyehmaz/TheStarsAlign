@@ -9,22 +9,7 @@ namespace TheStarsAlign
             int height = 10;
             string output;
 
-            var input = new PuzzleInput().getInput();
-
-            var regex = new Regex(@"position=\<\s*(?<x>-?\d+),\s*(?<y>-?\d+)\> velocity=\<\s*(?<vx>-?\d+),\s*(?<vy>-?\d+)\>");
-
-            var points = input.Split("\n").Select(line =>
-            {
-                var groups = regex.Match(line);
-                return new Point
-                {
-                    PositionX = int.Parse(groups.Groups["x"].Value),
-                    PositionY = int.Parse(groups.Groups["y"].Value),
-                    VelocityX = int.Parse(groups.Groups["vx"].Value),
-                    VelocityY = int.Parse(groups.Groups["vy"].Value)
-                };
-            }).ToList();
-
+            var points = getPoints();
 
             while (true)
             {
@@ -67,6 +52,53 @@ namespace TheStarsAlign
 
                 return output;
             }
+        }
+
+
+        public object getSeconds()
+        {
+            var points = getPoints();
+
+            const int letterHeight = 10;
+            var count = 0;
+            while (true)
+            {
+                count++;
+                foreach (var point in points)
+                {
+                    point.PositionX += point.VelocityX;
+                    point.PositionY += point.VelocityY;
+                }
+
+                var minY = points.Min(x => x.PositionY);
+                var maxY = points.Max(x => x.PositionY);
+
+                if (!(maxY - minY < letterHeight))
+                    continue;
+
+                return count.ToString();
+            }
+        }
+
+        public List<Point> getPoints()
+        {
+            var input = new PuzzleInput().getInput();
+
+            var regex = new Regex(@"position=\<\s*(?<x>-?\d+),\s*(?<y>-?\d+)\> velocity=\<\s*(?<vx>-?\d+),\s*(?<vy>-?\d+)\>");
+
+            var points = input.Split("\n").Select(line =>
+            {
+                var groups = regex.Match(line);
+                return new Point
+                {
+                    PositionX = int.Parse(groups.Groups["x"].Value),
+                    PositionY = int.Parse(groups.Groups["y"].Value),
+                    VelocityX = int.Parse(groups.Groups["vx"].Value),
+                    VelocityY = int.Parse(groups.Groups["vy"].Value)
+                };
+            }).ToList();
+
+            return points;
         }
     }
 }
